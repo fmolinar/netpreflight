@@ -2,7 +2,7 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 
-from netpreflight.models import ValidationResult, ValidationReport
+from netpreflight.models import ValidationReport, ValidationResult
 
 
 def test_passing_validation_result() -> None:
