@@ -6,7 +6,8 @@ Path = tuple[PathSegment, ...]
 class PathNotFoundError(Exception):
     """Raised when a path is not found in a nested dictionary."""
 
-def get_path(data: dict, path: tuple) -> object:
+
+def get_path(data: object, path: Path) -> object:
     """Get a value from a nested dictionary using a path of keys.
 
     Args:
@@ -23,19 +24,17 @@ def get_path(data: dict, path: tuple) -> object:
 
     for segment in path:
         # The isinstance() function is a built-in Python function used to check if an object belongs to a specific class or data type, or a subclass of it.
-        if isinstance(current, dict) and isinstance(segment,str):
+        if isinstance(current, dict) and isinstance(segment, str):
             if segment not in current:
                 raise PathNotFoundError(f"Path not found: {path!r}")
-            
+
             current = current[segment]
             continue
-        
-        if isinstance(current, list) and isinstance(segment,int):
+
+        if isinstance(current, list) and isinstance(segment, int):
             if segment < 0 or segment >= len(current):
-                raise PathNotFoundError(
-                    f"Path not found: {path!r}"
-                )
-            
+                raise PathNotFoundError(f"Path not found: {path!r}")
+
             current = current[segment]
             continue
         raise PathNotFoundError(f"Path not found: {path!r}")
