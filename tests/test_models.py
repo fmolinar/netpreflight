@@ -2,7 +2,7 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 
-from netpreflight.models import ValidationResult
+from netpreflight.models import ValidationResult, ValidationReport
 
 
 def test_passing_validation_result() -> None:
@@ -49,3 +49,27 @@ def test_validation_result_immutable() -> None:
 
     with pytest.raises(FrozenInstanceError):
         result.passed = False
+
+
+def test_report_summarizes_results() -> None:
+    passing = ValidationResult(
+        device="router1",
+        check_name="Interface state",
+        passed=True,
+        actual="up",
+        expected="up",
+    )
+    failing = ValidationResult(
+        device="router1",
+        check_name="Interface MTU",
+        passed=False,
+        actual=1400,
+        expected=1500,
+        message="Expected 1500, but received 1400",
+    )
+
+    report = ValidationReport(results=(passing, failing))
+
+    assert report.passed is False
+    assert report.passed_count == 1
+    assert report.failed_count == 1

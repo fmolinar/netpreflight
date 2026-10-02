@@ -24,3 +24,20 @@ class CheckDefinition:
     name: str
     path: Path
     expected: object
+
+
+@dataclass(frozen=True, slots=True)
+class ValidationReport:
+    results: tuple[ValidationResult, ...]
+
+    @property
+    def passed(self) -> bool:
+        return all(result.passed for result in self.results)
+
+    @property
+    def passed_count(self) -> int:
+        return sum(1 for result in self.results if result.passed)
+
+    @property
+    def failed_count(self) -> int:
+        return sum(1 for result in self.results if not result.passed)
